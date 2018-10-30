@@ -1,0 +1,171 @@
+<html> 
+    <head>
+        <style>
+            body {
+                font-family: Georgia, 'Times New Roman', Times, serif;
+            }
+
+            #main {
+                margin: 5%;
+                height: 75%;
+                width: 87%;
+                background-image: url("Interview.jpg");
+                background-size: 100%;
+                border: 5px solid black;
+                padding: 1%;
+                border-radius: 1%;
+            }
+
+            #notebook {
+                position: absolute;
+                bottom: 5%;
+                left: 10%;
+                width: 20%;
+                height: 50%;
+                background-color: #ecdfc8;
+                border: 5px solid black;
+                padding: 1%;
+                border-radius: 1%;
+            }
+
+            #approval {
+                position: relative;
+                top: 2%;
+                left: 2%;
+                height: 20%;
+                width: 30%;
+                background-color: #d6d0d0;
+                border: 5px solid black;
+                padding: 1%;
+                border-radius: 1%;
+            }
+
+            .options {
+                height: 18%;
+                width: 90%;
+                margin: 2%;
+                padding: 1%;
+                border: 5px solid #7a7a7a;
+                border-radius: 5px;
+            }
+
+            #chatbox {
+                position: absolute;
+                bottom: 15%;
+                right: 8%;
+                height: 20%;
+                width: 30%;
+                background-color: #c4d8ee;
+                border: 5px solid black;
+                border-radius: 1%;
+                padding: 1%;
+            }
+        </style>
+
+        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            var approval = 50;
+            var question_asked = false;
+            var current_question = 0;
+            var answers = [answer1/*, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10*/];
+            var questions = [question1, question2/*, question3, question4, question5, question6, question7, question8, question9, question10*/];
+            var num_questions = questions.length;
+
+            $(document).ready(function() {
+                $("#option1").click(function() {
+                    if (question_asked) {
+                        ++current_question;
+                        questions[current_question] ();
+                    } else {
+                        answers[current_question] (1);
+                    }
+                });
+                $("#option2").click(function() {
+                    if (!question_asked) {
+                        answers[current_question] (2);
+                    }
+                });
+                $("#option3").click(function() {
+                    if (!question_asked) {
+                        answers[current_question] (3);
+                    }
+                });
+                $("#option4").click(function() {
+                    if (!question_asked) {
+                        answers[current_question] (4);
+                    }
+                });
+            });
+            
+            var opt2;
+            var opt3;
+            var opt4;
+
+            function answer1 (option) {
+                if (option == 1) {
+                    approval += 10;
+                    $("#chatbox").text("I'm great, thanks!  You are such a good candidate!");
+                } else if (option == 2) {
+                    approval += 5;
+                    $("#chatbox").text("That is goo, you are an okay candidate");
+                } else if (option == 3) {
+                    approval -= 5;
+                    $("#chatbox").text("That's unfortunate.  But it is not the right time to discuss that here.");
+                } else {
+                    approval -= 10;
+                    $("#chatbox").text("How rude, not a good candidate.");
+                }
+                $("#approval").text("Approval: " + approval + "%");
+                question_asked = true;
+                opt2 = $("#option2").detach();
+                opt3 = $("#option3").detach();
+                opt4 = $("#option4").detach();
+                $("#option1").text("Continue.");
+            }
+
+            function question1 () {
+
+            }
+
+            function question2 () {
+                $("#chatbox").text("What kind of response will you submit?");
+                $("#notebook").append(opt2);
+                $("#notebook").append(opt3);
+                $("#notebook").append(opt4);
+                $("#option1").text("This is a good response");
+                $("#option2").text("This is on okay response");
+                $("#option3").text("This is a poor response");
+                $("#option4").text("This is a horrible response");
+                question_asked = false;
+            }
+        </script>
+    </head>
+
+    <body>
+
+        <div id = "main">
+            <div id = "notebook">
+                <div class = "options" id = "option1">
+                    A: I'm good, and how are you?
+                </div>
+                <div class = "options" id = "option2">
+                    B: Not bad.
+                </div>
+                <div class = "options" id = "option3">
+                    C: Horrible, my day has been the worst!
+                </div>
+                <div class = "options" id = "option4">
+                    D: Okay, can we do this interview quickly?  I have two more back to back.
+                </div>
+            </div>
+
+            <div id = "approval">
+                Approval: 50%
+            </div>
+
+            <div id = "chatbox">
+                Good Morning!  My name is Sara, manager for Apples and Bananas Inc.  How are you?
+            </div>
+        </div>
+    </body>
+</html>
