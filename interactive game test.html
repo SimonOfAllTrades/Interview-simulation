@@ -47,6 +47,11 @@
                 padding: 1%;
                 border: 5px solid #7a7a7a;
                 border-radius: 5px;
+                transition: background 0.5s;
+            }
+
+            .options:hover {
+                background: #e1b361;
             }
 
             #chatbox {
@@ -67,32 +72,60 @@
             var approval = 50;
             var question_asked = false;
             var current_question = 0;
-            var answers = [answer1/*, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10*/];
-            var questions = [question1, question2/*, question3, question4, question5, question6, question7, question8, question9, question10*/];
-            var num_questions = questions.length;
 
+            // actual questions the employer will ask
+            var question1 = "How are you?";
+            var question2 = "What is the colour of the sky?";
+            var question3 = "What time is it?";
+            var question4 = "Do you believe in the afterlife?";
+            var question5 = "Where do babies come from?";
+            var question6 = "Why are manholes round?";
+            var question7 = "What is your biggest weakness?";
+            var question8 = "What can you put in a bucket to make it lighter?";
+            var question9 = "How far into a forest can you walk?";
+            var question10 = "Three gods A, B, and C are called, in no particular order, True, False, and Random. True always speaks truly, False always speaks falsely, but whether Random speaks truly or falsely is a completely random matter. Your task is to determine the identities of A, B, and C by asking three yes-no questions; each question must be put to exactly one god. The gods understand English, but will answer all questions in their own language, in which the words for yes and no are da and ja, in some order. You do not know which word means which.";
+            
+            // array of multiple choice answers the student can reply with
+            var answer1 = ["I'm good", "I'm okay", "I'm not well", "I hate interviews"];
+            var answer2 = ["blue", "white", "upDog", "I don't know"];
+            var answer3 = ["time for you to get a watch!", "about tree fiddy", "5 after quarter after half past midnight", "time is a social contruct"];
+            var answer4 = ["Everyone is entitled to their own belief", "Who knows", "I don't care", "who can say that I am alive right now?"];
+            var answer5 = ["I don't think this is a relevant question", "Parents", "an island, where they grow on trees", "outer space"];
+            var answer6 = ["Becuase it prevents them from falling down the hole", "they are nicer looking", "It is a better structure than squares", "I don't know"];
+            var answer7 = ["I take on too much work", "I am late often", "I have no weaknesses", "I am lazy"];
+            var answer8 = ["A hole", "A match", "Nothing", "Air"];
+            var answer9 = ["If a tree falls in the forest and no one hears it, does it fall?", "halfway", "to the middle", "to the other end"];
+            var answer10 = ["Yes", "No", "I don't know", "42"];
+
+            // array of answer functions
+            var answer_types = ["That was a great response!", "That was an okay reponse.", "That was a poor response.", "That was a horrible reponse!"];
+            var array_answers = [answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10]
+            var array_questions = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10];
+            var num_questions = array_questions.length;
+
+            // detecting the clicking the div answers
             $(document).ready(function() {
                 $("#option1").click(function() {
                     if (question_asked) {
                         ++current_question;
-                        questions[current_question] ();
+                        questions ();
                     } else {
-                        answers[current_question] (1);
+                        answers(1);
                     }
                 });
                 $("#option2").click(function() {
                     if (!question_asked) {
-                        answers[current_question] (2);
+                        answers (2);
                     }
                 });
                 $("#option3").click(function() {
                     if (!question_asked) {
-                        answers[current_question] (3);
+                        answers (3);
                     }
                 });
                 $("#option4").click(function() {
                     if (!question_asked) {
-                        answers[current_question] (4);
+                        answers (4);
                     }
                 });
             });
@@ -101,41 +134,88 @@
             var opt3;
             var opt4;
 
-            function answer1 (option) {
-                if (option == 1) {
+            var question_order = [1, 2, 3, 4];
+            var answer_order = [1, 2 ,3 ,4];
+            var question_ask = [];
+            var answer_ask = [];
+
+            // randomizes the order of 4 numbers from 1 - 4 in the array question_order and places the new sequence in new_order
+            function random () {
+                question_order = [1, 2, 3, 4];
+                var new_order = [0, 0, 0, 0];
+                for (var i = 0; i < 4; ++i) {
+                    while (1) {
+                        var num = Math.floor (Math.random() * 4);
+                        if (question_order[num] != 0) {
+                            question_order[num] = 0;
+                            new_order[i] = num + 1;
+                            break;
+                        }
+                    }
+                }
+                question_order = new_order;
+                answer_order = new_order;
+                for (var i = 0; i < 4; ++i) {
+                    if (new_order[i] == 1) {
+                        question_ask[i] = array_questions[current_question][0];
+                        answer_ask[i] = array_answers[current_question][0];
+                    } else if (new_order[i] == 2) {
+                        question_ask[i] = array_questions[current_question][1];
+                        answer_ask[i] = array_answers[current_question][1];  
+                    } else if (new_order[i] == 3) {
+                        question_ask[i] = array_questions[current_question][2];
+                        answer_ask[i] = array_answers[current_question][2];  
+                    } else {
+                        question_ask[i] = array_questions[current_question][3];
+                        answer_ask[i] = array_answers[current_question][3];  
+                    }
+                }
+            }
+
+            
+
+            // changes the chatbox text that the employer would say based on the response
+            function answers (option) {
+                if (question_order [option - 1] == 1) {
                     approval += 10;
-                    $("#chatbox").text("I'm great, thanks!  You are such a good candidate!");
-                } else if (option == 2) {
+                } else if (question_order [option - 1] == 2) {
                     approval += 5;
-                    $("#chatbox").text("That is goo, you are an okay candidate");
-                } else if (option == 3) {
+                } else if (question_order [option - 1] == 3) {
                     approval -= 5;
-                    $("#chatbox").text("That's unfortunate.  But it is not the right time to discuss that here.");
                 } else {
                     approval -= 10;
-                    $("#chatbox").text("How rude, not a good candidate.");
                 }
+                $("#chatbox").text(answer_types[(answer_order[option - 1]) - 1]);
                 $("#approval").text("Approval: " + approval + "%");
                 question_asked = true;
+                if (approval < 0) {
+                    $("#chatbox").text("You do not seem like the right fit for this position. Bye.");
+                    alert("You have lost the interest of the Employer.  You lose a chance at this position");
+                    window.location.reload();
+                } else if (approval > 100) {
+                    $("#chatbox").text("Wow!  You are such a great Candiadate, you win!");
+                    alert("You have done well! You're Hired!");
+                    window.location.reload();
+                } else if (current_question + 1 == num_questions) {
+                    alert("You have completed the interview!");
+                    window.location.reload();
+                }
                 opt2 = $("#option2").detach();
                 opt3 = $("#option3").detach();
                 opt4 = $("#option4").detach();
                 $("#option1").text("Continue.");
             }
 
-            function question1 () {
-
-            }
-
-            function question2 () {
-                $("#chatbox").text("What kind of response will you submit?");
+            // creates the new set of questions
+            function questions () {
+                $("#chatbox").text(array_questions[current_question]);
                 $("#notebook").append(opt2);
                 $("#notebook").append(opt3);
                 $("#notebook").append(opt4);
-                $("#option1").text("This is a good response");
-                $("#option2").text("This is on okay response");
-                $("#option3").text("This is a poor response");
-                $("#option4").text("This is a horrible response");
+                random();
+                for (var i = 0; i < 4; ++i) {
+                    $("#option" + (i + 1)).text(answer_ask[i]);
+                }
                 question_asked = false;
             }
         </script>
